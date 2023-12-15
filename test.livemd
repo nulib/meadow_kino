@@ -1,0 +1,57 @@
+# Untitled notebook
+
+```elixir
+Mix.install([
+  {:meadow_kino, path: "/home/ec2-user/environment/meadow_kino"},
+  {:kino_db, "~> 0.2.3"}
+])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiIiLCJjb2RlIjoiTWVhZG93LkRhdGEuU2NoZW1hcy5Xb3JrIHw+IE1lYWRvdy5SZXBvLmFnZ3JlZ2F0ZSg6Y291bnQpIiwiY29va2llIjoiIiwiY29va2llX3NlY3JldCI6Ik1FQURPV19DT09LSUUiLCJub2RlIjoiIiwibm9kZV9zZWNyZXQiOiJNRUFET1dfTk9ERSIsIm5vZGVfc2VjcmV0X3ZhbHVlIjoibWVhZG93QG1iay5kZXYucmRjLmxpYnJhcnkubm9ydGh3ZXN0ZXJuLmVkdSIsInVzZV9jb29raWVfc2VjcmV0Ijp0cnVlLCJ1c2Vfbm9kZV9zZWNyZXQiOnRydWV9","chunks":null,"kind":"Elixir.Meadow.Kino.RemoteExecutionCell","livebook_object":"smart_cell"} -->
+
+```elixir
+require Kino.RPC
+node = String.to_atom(System.fetch_env!("LB_MEADOW_NODE"))
+Node.set_cookie(node, String.to_atom(System.fetch_env!("LB_MEADOW_COOKIE")))
+
+Kino.RPC.eval_string(node, ~S"Meadow.Data.Schemas.Work |> Meadow.Repo.aggregate(:count)",
+  file: __ENV__.file
+)
+```
+
+<!-- livebook:{"attrs":"e30","chunks":null,"kind":"Elixir.Meadow.Kino.DBConnectionCell","livebook_object":"smart_cell"} -->
+
+```elixir
+require Kino.RPC
+node = String.to_atom(System.fetch_env!("LB_MEADOW_NODE"))
+Node.set_cookie(node, String.to_atom(System.fetch_env!("LB_MEADOW_COOKIE")))
+
+db_opts =
+  Kino.RPC.eval_string(
+    node,
+    ~S"""
+    Application.get_env(:meadow, Meadow.Repo)
+    |> Keyword.take([:hostname, :port, :username, :password, :database])
+    """,
+    file: __ENV__.file
+  )
+
+{:ok, conn} = Kino.start_child({Postgrex, db_opts})
+```
+
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6InNlbGVjdCBpZDo6dGV4dCwgZGVzY3JpcHRpdmVfbWV0YWRhdGEtPj4ndGl0bGUnIGZyb20gd29ya3MgbGltaXQgMTAwIiwicmVzdWx0X3ZhcmlhYmxlIjoicmVzdWx0IiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result =
+  Postgrex.query!(
+    conn,
+    "select id::text, descriptive_metadata->>'title' from works limit 100",
+    []
+  )
+```
+
+```elixir
+
+```
