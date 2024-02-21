@@ -23,6 +23,8 @@ defmodule Meadow.Kino.MixProject do
   defp deps do
     [
       {:kino, "~> 0.12.0"},
+      {:jason, "~> 1.4.1"},
+      {:kino_db, "~> 0.2.3"},
       {:postgrex, "~> 0.17.4"}
     ]
   end
