@@ -22,9 +22,9 @@ defmodule Meadow.Kino.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kino, "~> 0.12.0"},
       {:jason, "~> 1.4.1"},
-      {:kino_db, "~> 0.2.3"},
+      {:kino, "~> 0.0"},
+      {:kino_db, "~> 0.0"},
       {:postgrex, "~> 0.17.4"}
     ]
   end
